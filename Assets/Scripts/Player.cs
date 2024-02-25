@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
 {
+    public UiManager uiManager;
     public float jumpForce = 100f;
     
     [Header("Audio effects")]
@@ -13,7 +14,8 @@ public class Player : MonoBehaviour
     
     private Rigidbody2D rb;
     private AudioSource audioSource;
-    
+    private int score = 0;
+        
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -44,6 +46,14 @@ public class Player : MonoBehaviour
         if (other.transform.CompareTag("Pipe"))
         {
             audioSource.PlayOneShot(scoreSound);
+            uiManager.DisplayScore(++score);
         }
+    }
+    
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        uiManager.DisplayScoreBoard(score);
+        audioSource.PlayOneShot(dieSound);
+        Destroy(this); //destroy script so player cant jump
     }
 }
